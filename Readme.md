@@ -23,9 +23,9 @@ docker compose up -d postgres
 ```
 
 ```
-CREATE TABLE raw_sensors_data (
+CREATE TABLE raw_fv_data (
     message_id varchar,
-    sensor_id varchar,
+    planta_id varchar,
     message varchar,
     timestamp varchar
 );
