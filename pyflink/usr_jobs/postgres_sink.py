@@ -31,27 +31,6 @@ def parse_data(data: str) -> Row:
     timestamp = datetime.strptime(data["timestamp"], "%Y-%m-%dT%H:%M:%S.%f+00:00")
     return Row(message_id, planta_id, message, timestamp)
 
-def parse_and_filter(value: str) -> str | None:
-    Radiacion_THRESHOLD = 200.0
-    Potencia_THRESHOLD = 50.0
-    data = json.loads(value)
-    message_id = data["message_id"]
-    planta_id = data["planta_id"]
-    Radiacion = data["message"]["Radiacion"]
-    Potencia = data["message"]["Potencia"]
-    timestamp = data["timestamp"]
-    if ((Radiacion > Radiacion_THRESHOLD) & (Potencia < Potencia_THRESHOLD)):
-        alert_message = {
-            "message_id": message_id,
-            "planta_id": planta_id,
-            "Radiacion": Radiacion,
-            "Potencia": Potencia,
-            "alert": "Sin Generacion",
-            "timestamp": timestamp
-        }
-        return json.dumps(alert_message)
-    return None
-
 def initialize_env() -> StreamExecutionEnvironment:
     """Makes stream execution environment initialization"""
     env = StreamExecutionEnvironment.get_execution_environment()
@@ -136,12 +115,11 @@ def main() -> None:
 
     # Make transformations to the data stream
     transformed_data = data_stream.map(parse_data, output_type=TYPE_INFO)
-    alarms_data = data_stream.map(parse_and_filter, output_type=Types.STRING()).filter(lambda x: x is not None)
     logger.info("Defined transformations to data stream")
 
     logger.info("Ready to sink data")
-    alarms_data.print()
     transformed_data.add_sink(jdbc_sink)
+    transformed_data.print()
 
     # Execute the Flink job
     env.execute("Flink PostgreSQL Sink")
