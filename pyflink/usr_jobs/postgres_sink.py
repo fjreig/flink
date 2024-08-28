@@ -26,25 +26,28 @@ POSTGRES_DB = os.environ['POSTGRES_DB']
 def parse_data(data: str) -> Row:
     data = json.loads(data)
     message_id = data["message_id"]
-    sensor_id = int(data["sensor_id"])
+    planta_id = int(data["planta_id"])
     message = json.dumps(data["message"])
     timestamp = datetime.strptime(data["timestamp"], "%Y-%m-%dT%H:%M:%S.%f+00:00")
-    return Row(message_id, sensor_id, message, timestamp)
+    return Row(message_id, planta_id, message, timestamp)
 
-def filter_temperatures(value: str) -> str | None:
-    TEMP_THRESHOLD = 30.0
+def parse_and_filter(value: str) -> str | None:
+    Radiacion_THRESHOLD = 200.0
+    Potencia_THRESHOLD = 50.0
     data = json.loads(value)
     message_id = data["message_id"]
-    sensor_id = int(data["sensor_id"])
-    temperature = float(data["message"]["temperature"])
+    planta_id = data["planta_id"]
+    Radiacion = data["message"]["Radiacion"]
+    Potencia = data["message"]["Potencia"]
     timestamp = data["timestamp"]
-    if temperature > TEMP_THRESHOLD:  # Change 30.0 to your threshold
+    if ((Radiacion > Radiacion_THRESHOLD) & (Potencia < Potencia_THRESHOLD)):
         alert_message = {
             "message_id": message_id,
-            "sensor_id": sensor_id,
-            "temperature": temperature,
-            "alert": "High temperature detected",
-            "timestamp": timestamp,
+            "planta_id": planta_id,
+            "Radiacion": Radiacion,
+            "Potencia": Potencia,
+            "alert": "Sin Generacion",
+            "timestamp": timestamp
         }
         return json.dumps(alert_message)
     return None
@@ -74,7 +77,7 @@ def configure_source(server: str, earliest: bool = False) -> KafkaSource:
 
     kafka_source = (
         KafkaSource.builder()
-        .set_topics("sensors")
+        .set_topics("FV")
         .set_properties(properties)
         .set_starting_offsets(offset)
         .set_value_only_deserializer(SimpleStringSchema())
@@ -114,13 +117,13 @@ def main() -> None:
     logger.info("Configuring source and sinks")
     kafka_source = configure_source(KAFKA_HOST)
     sql_dml = (
-        "INSERT INTO raw_sensors_data (message_id, sensor_id, message, timestamp) "
+        "INSERT INTO raw_sensors_data (message_id, planta_id, message, timestamp) "
         "VALUES (?, ?, ?, ?)"
     )
     TYPE_INFO = Types.ROW(
         [
             Types.STRING(),  # message_id
-            Types.INT(),  # sensor_id
+            Types.INT(),  # planta_id
             Types.STRING(),  # message
             Types.SQL_TIMESTAMP(),  # timestamp
         ]
@@ -129,15 +132,11 @@ def main() -> None:
     logger.info("Source and sinks initialized")
 
     # Create a DataStream from the Kafka source and assign watermarks
-    data_stream = env.from_source(
-        kafka_source, WatermarkStrategy.no_watermarks(), "Kafka sensors topic"
-    )
+    data_stream = env.from_source(kafka_source, WatermarkStrategy.no_watermarks(), "Kafka FV topic")
 
     # Make transformations to the data stream
     transformed_data = data_stream.map(parse_data, output_type=TYPE_INFO)
-    alarms_data = data_stream.map(
-        filter_temperatures, output_type=Types.STRING()
-    ).filter(lambda x: x is not None)
+    alarms_data = data_stream.map(parse_and_filter, output_type=Types.STRING()).filter(lambda x: x is not None)
     logger.info("Defined transformations to data stream")
 
     logger.info("Ready to sink data")
