@@ -1,8 +1,8 @@
 # Apache Flink
 ### Info
 
-https://github.com/augustodn/pyflink-docker/tree/main
-https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
+* https://github.com/augustodn/pyflink-docker/tree/main
+* https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
 
 ### Kafka
 
