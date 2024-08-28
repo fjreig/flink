@@ -29,6 +29,13 @@ CREATE TABLE raw_fv_data (
     message varchar,
     timestamp varchar
 );
+CREATE TABLE alert_fv_data (
+    timestamp varchar,
+    planta_id varchar,
+    Radiacion varchar, 
+    Potencia varchar,
+    Alerta varchar
+);
 ```
 
 ### MongoDB
@@ -68,5 +75,10 @@ flink run -py /opt/flink/usr_jobs/kafka_sink.py
 flink run -py /opt/flink/usr_jobs/postgres_sink.py
 ```
 
+## 6. Postgres Sink Alert
+
+```
+flink run -py /opt/flink/usr_jobs/postgres_sink_alert.py
+```
 
 
