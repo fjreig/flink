@@ -1,3 +1,6 @@
+# Apache Flink
+### Info
+
 https://github.com/augustodn/pyflink-docker/tree/main
 https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
 
@@ -28,10 +31,11 @@ CREATE TABLE raw_sensors_data (
 );
 ```
 
-# mongo
+### mongo
 
+```
 docker compose up -d mongo mongo-express
-
+```
 
 ## 1. Acceder a flink
 
