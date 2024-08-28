@@ -34,7 +34,7 @@ CREATE TABLE raw_sensors_data (
 ### MongoDB
 
 ```
-docker compose up -d mongo mongo-express
+docker compose up -d mongo
 ```
 
 ## 1. Acceder a flink
