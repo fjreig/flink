@@ -31,7 +31,7 @@ CREATE TABLE raw_sensors_data (
 );
 ```
 
-### mongo
+### MongoDB
 
 ```
 docker compose up -d mongo mongo-express
