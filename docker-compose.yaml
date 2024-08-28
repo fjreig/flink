@@ -105,13 +105,6 @@ services:
     container_name: mongo
     env_file:
       - .env
-
-  mongo-express:
-    image: mongo-express
-    container_name: mongo-express
-    ports:
-      - 8082:8081
-    env_file:
       - .env
 
 volumes:
