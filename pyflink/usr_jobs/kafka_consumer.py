@@ -6,18 +6,21 @@ from pyflink.datastream import StreamExecutionEnvironment
 from pyflink.datastream.connectors.kafka import KafkaOffsetsInitializer, KafkaSource
 
 def parse_and_filter(value: str) -> str | None:
-    TEMP_THRESHOLD = 30.0
+    Radiacion_THRESHOLD = 200.0
+    Potencia_THRESHOLD = 50.0
     data = json.loads(value)
     message_id = data["message_id"]
-    sensor_id = data["sensor_id"]
-    temperature = data["message"]["temperature"]
+    planta_id = data["planta_id"]
+    Radiacion = data["message"]["Radiacion"]
+    Potencia = data["message"]["Potencia"]
     timestamp = data["timestamp"]
-    if temperature > TEMP_THRESHOLD:
+    if ((Radiacion > Radiacion_THRESHOLD) & (Potencia < Potencia_THRESHOLD)):
         alert_message = {
             "message_id": message_id,
-            "sensor_id": sensor_id,
-            "temperature": temperature,
-            "alert": "High temperature detected",
+            "planta_id": planta_id,
+            "Radiacion": Radiacion,
+            "Potencia": Potencia,
+            "alert": "Sin Generacion",
             "timestamp": timestamp
         }
         return json.dumps(alert_message)
@@ -44,7 +47,7 @@ def main() -> None:
     # Create a Kafka Source
     kafka_source = (
         KafkaSource.builder()
-        .set_topics("sensors")
+        .set_topics("FV")
         .set_properties(properties)
         .set_starting_offsets(offset)
         .set_value_only_deserializer(SimpleStringSchema())
@@ -53,7 +56,7 @@ def main() -> None:
 
     # Create a DataStream from the Kafka source and assign watermarks
     data_stream = env.from_source(
-        kafka_source, WatermarkStrategy.no_watermarks(), "Kafka sensors topic"
+        kafka_source, WatermarkStrategy.no_watermarks(), "Kafka FV topic"
     )
 
     # Print line for readablity in the console
