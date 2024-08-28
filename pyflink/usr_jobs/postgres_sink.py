@@ -117,7 +117,7 @@ def main() -> None:
     logger.info("Configuring source and sinks")
     kafka_source = configure_source(KAFKA_HOST)
     sql_dml = (
-        "INSERT INTO raw_sensors_data (message_id, planta_id, message, timestamp) "
+        "INSERT INTO raw_fv_data (message_id, planta_id, message, timestamp) "
         "VALUES (?, ?, ?, ?)"
     )
     TYPE_INFO = Types.ROW(
