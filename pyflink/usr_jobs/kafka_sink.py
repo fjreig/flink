@@ -25,20 +25,23 @@ def parse_data(data: str) -> Row:
     timestamp = datetime.strptime(data["timestamp"], "%Y-%m-%dT%H:%M:%S.%f+00:00")
     return Row(message_id, sensor_id, message, timestamp)
 
-def filter_temperatures(value: str) -> str | None:
-    TEMP_THRESHOLD = 30.0
+def parse_and_filter(value: str) -> str | None:
+    Radiacion_THRESHOLD = 200.0
+    Potencia_THRESHOLD = 50.0
     data = json.loads(value)
     message_id = data["message_id"]
-    sensor_id = int(data["sensor_id"])
-    temperature = float(data["message"]["temperature"])
+    planta_id = data["planta_id"]
+    Radiacion = data["message"]["Radiacion"]
+    Potencia = data["message"]["Potencia"]
     timestamp = data["timestamp"]
-    if temperature > TEMP_THRESHOLD:
+    if ((Radiacion > Radiacion_THRESHOLD) & (Potencia < Potencia_THRESHOLD)):
         alert_message = {
             "message_id": message_id,
-            "sensor_id": sensor_id,
-            "temperature": temperature,
-            "alert": "High temperature detected",
-            "timestamp": timestamp,
+            "planta_id": planta_id,
+            "Radiacion": Radiacion,
+            "Potencia": Potencia,
+            "alert": "Sin Generacion",
+            "timestamp": timestamp
         }
         return json.dumps(alert_message)
     return None
@@ -66,7 +69,7 @@ def configure_source(server: str, earliest: bool = False) -> KafkaSource:
 
     kafka_source = (
         KafkaSource.builder()
-        .set_topics("sensors")
+        .set_topics("FV")
         .set_properties(properties)
         .set_starting_offsets(offset)
         .set_value_only_deserializer(SimpleStringSchema())
@@ -101,7 +104,7 @@ def main() -> None:
     # Define source and sinks
     logger.info("Configuring source and sinks")
     kafka_source = configure_source(KAFKA_HOST)
-    kafka_sink = configure_kafka_sink(KAFKA_HOST, "alerts")
+    kafka_sink = configure_kafka_sink(KAFKA_HOST, "FV_alerts")
     logger.info("Source and sinks initialized")
 
     # Create a DataStream from the Kafka source and assign watermarks
@@ -110,9 +113,7 @@ def main() -> None:
     )
 
     # Make transformations to the data stream
-    alarms_data = data_stream.map(
-        filter_temperatures, output_type=Types.STRING()
-    ).filter(lambda x: x is not None)
+    alarms_data = data_stream.map(parse_and_filter, output_type=Types.STRING()).filter(lambda x: x is not None)
     logger.info("Defined transformations to data stream")
 
     logger.info("Ready to sink data")
