@@ -83,7 +83,7 @@ def main():
     # write time windowed aggregations to sink table
     revenue_tbl.execute_insert('sales_euros').wait()
 
-    tbl_env.execute('windowed-sales-euros')
+    tbl_env.execute('postgres-table-sink')
 
 if __name__ == '__main__':
     main()
