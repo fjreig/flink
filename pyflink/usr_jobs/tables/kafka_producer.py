@@ -37,11 +37,11 @@ class ProducerCallback:
             ))
 
 def main():
-    logger.info('Starting sales producer')
+    logger.info('Starting FV producer')
     conf = {
         'bootstrap.servers': 'redpanda:9092',
         'linger.ms': 200,
-        'client.id': 'sales-1',
+        'client.id': 'fv_group',
         'partitioner': 'murmur2_random'
     }
 
@@ -53,15 +53,14 @@ def main():
     while True:
         is_tenth = i % 10 == 0
 
-        sales = {
+        fv_message = {
             'planta_id': random.choice(PLANTAS_FV),
             'potencia': random.randrange(0, 100),
             'radiacion': random.randrange(0, 1200),
             'time_ts': int(time.time() * 1000)
         }
-        producer.produce(topic='fv_plantas',
-                        value=json.dumps(sales),
-                        on_delivery=ProducerCallback(sales, log_success=is_tenth))
+        producer.produce(topic='fv_plantas', value=json.dumps(fv_message),
+            on_delivery=ProducerCallback(fv_message, log_success=is_tenth))
 
         if is_tenth:
             producer.poll(1)
