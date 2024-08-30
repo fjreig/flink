@@ -48,7 +48,7 @@ def main():
     tbl.print_schema()
 
     #####################################################################
-    # Define Tumbling Window Aggregate Calculation (Seller Sales Per Minute)
+    # Define Tumbling Window Aggregate Calculation
     #####################################################################
     sql = """
         SELECT
@@ -64,7 +64,7 @@ def main():
     revenue_tbl.print_schema()
 
     ###############################################################
-    # Create Kafka Sink Table
+    # Create Mongo Sink Table
     ###############################################################
     sink_ddl = f"""
         CREATE TABLE fv_table2 (
