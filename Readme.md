@@ -1,6 +1,5 @@
-# PyFLINK
 
-## INFO
+## info
 
 * https://github.com/augustodn/pyflink-docker/tree/main
 * https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
@@ -39,12 +38,14 @@ CREATE TABLE alert_fv_data (
     Potencia varchar,
     Alerta varchar
 );
-CREATE TABLE sales_euros (
-    seller_id VARCHAR,
+CREATE TABLE fv_table (
+    planta_id VARCHAR,
     window_start TIMESTAMP(3),
     window_end TIMESTAMP(3),
-    window_sales FLOAT
+    Potencia FLOAT,
+    Radiacion FLOAT
 );
+
 ```
 
 # mongo
