@@ -18,7 +18,7 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-SELLERS = ['LNK', 'OMA', 'KC', 'DEN']
+PLANTAS_FV = ['Cheste', 'Vara', 'Quart', 'Oliva', 'Alicante']
 
 class ProducerCallback:
     def __init__(self, record, log_success=False):
@@ -54,18 +54,19 @@ def main():
         is_tenth = i % 10 == 0
 
         sales = {
-            'seller_id': random.choice(SELLERS),
-            'amount_usd': random.randrange(100, 1000),
-            'sale_ts': int(time.time() * 1000)
+            'planta_id': random.choice(PLANTAS_FV),
+            'potencia': random.randrange(0, 100),
+            'radiacion': random.randrange(0, 1200),
+            'time_ts': int(time.time() * 1000)
         }
-        producer.produce(topic='sales-usd',
+        producer.produce(topic='fv_plantas',
                         value=json.dumps(sales),
                         on_delivery=ProducerCallback(sales, log_success=is_tenth))
 
         if is_tenth:
             producer.poll(1)
             time.sleep(2)
-            i = 0 # no need to let i grow unnecessarily large
+            i = 0
 
         i += 1
 
