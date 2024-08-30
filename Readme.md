@@ -1,5 +1,6 @@
+# PyFLINK
 
-## info
+## Info
 
 * https://github.com/augustodn/pyflink-docker/tree/main
 * https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
@@ -106,14 +107,20 @@ python /opt/flink/usr_jobs/tables/kafka_producer.py
 flink run -py /opt/flink/usr_jobs/tables/kafka_sink.py
 ```
 
-### 2.4. postgres Sink
+### 2.3. postgres Sink
 
 ```
 flink run -py /opt/flink/usr_jobs/tables/postgres_sink.py
 ```
 
-### 2.3. mongo Sink
+### 2.4. mongo Sink
 
 ```
 flink run -py /opt/flink/usr_jobs/tables/mongo_sink.py
+```
+
+### 2.5. Print Sink
+
+```
+python /opt/flink/usr_jobs/tables/print_sink.py
 ```
