@@ -44,7 +44,7 @@ def main():
     tbl.print_schema()
 
     #####################################################################
-    # Define Tumbling Window Aggregate Calculation (Seller Sales Per Minute)
+    # Define Tumbling Window Aggregate Calculation
     #####################################################################
     sql = """
         SELECT
