@@ -1,8 +1,11 @@
-# Apache Flink
-### Info
+# PyFLINK
+
+## INFO
 
 * https://github.com/augustodn/pyflink-docker/tree/main
 * https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
+* https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-mongodb/1.1.0-1.18/
+* https://medium.com/@dmitri.mahayana/idx-stock-real-time-data-prediction-with-flink-kafka-mongodb-526c6abf291f
 
 ### Kafka
 
@@ -36,49 +39,80 @@ CREATE TABLE alert_fv_data (
     Potencia varchar,
     Alerta varchar
 );
+CREATE TABLE sales_euros (
+    seller_id VARCHAR,
+    window_start TIMESTAMP(3),
+    window_end TIMESTAMP(3),
+    window_sales FLOAT
+);
 ```
 
-### MongoDB
+# mongo
 
-```
 docker compose up -d mongo
-```
 
-## 1. Acceder a flink
+
+# 1. Acceder a flink
 
 ```
 docker exec -it jobmanager /bin/bash
 docker exec -it taskmanager /bin/bash
 ```
 
-## 2. kafka Producer
+## 1. DataStream
+
+### 1.1. kafka Producer
 
 ```
-python /opt/flink/usr_jobs/kafka_producer.py
+python /opt/flink/usr_jobs/stream/kafka_producer.py
 ```
 
-## 3. kafka Consumer
+### 1.2. kafka Consumer
 
 ```
-python /opt/flink/usr_jobs/kafka_consumer.py
+python /opt/flink/usr_jobs/stream/kafka_consumer.py
 ```
 
-## 4. kafka Sink
+### 1.3. kafka Sink
 
 ```
-flink run -py /opt/flink/usr_jobs/kafka_sink.py
+flink run -py /opt/flink/usr_jobs/stream/kafka_sink.py
 ```
 
-## 5. Postgres Sink
+### 1.4. Postgres Sink
 
 ```
-flink run -py /opt/flink/usr_jobs/postgres_sink.py
+flink run -py /opt/flink/usr_jobs/stream/postgres_sink.py
 ```
 
-## 6. Postgres Sink Alert
+### 1.5. Postgres Sink Alerts
 
 ```
-flink run -py /opt/flink/usr_jobs/postgres_sink_alert.py
+flink run -py /opt/flink/usr_jobs/stream/postgres_sink_alert.py
 ```
 
+## 2. Tablas
 
+### 2.1. kafka Producer
+
+```
+python /opt/flink/usr_jobs/tables/kafka_producer.py
+```
+
+### 2.2. kafka Sink
+
+```
+flink run -py /opt/flink/usr_jobs/tables/kafka_sink.py
+```
+
+### 2.4. postgres Sink
+
+```
+flink run -py /opt/flink/usr_jobs/tables/postgres_sink.py
+```
+
+### 2.3. mongo Sink
+
+```
+flink run -py /opt/flink/usr_jobs/tables/mongo_sink.py
+```
