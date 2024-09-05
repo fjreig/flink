@@ -46,7 +46,12 @@ CREATE TABLE fv_table (
     Potencia FLOAT,
     Radiacion FLOAT
 );
-
+CREATE TABLE fv_pavasal_Cheste (
+    window_start TIMESTAMP(3),
+    window_end TIMESTAMP(3),
+    Radiacion FLOAT,
+    PA FLOAT
+);
 ```
 
 # mongo
@@ -59,6 +64,14 @@ docker compose up -d mongo
 ```
 docker exec -it jobmanager /bin/bash
 docker exec -it taskmanager /bin/bash
+```
+
+```
+docker exec -it jobmanager ./bin/sql-client.sh
+```
+
+```
+docker exec -it jobmanager ./bin/sql-client.sh -f /opt/flink/usr_jobs/sql/Tablas.sql
 ```
 
 ## 1. DataStream
