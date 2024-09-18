@@ -154,7 +154,7 @@ python /opt/flink/usr_jobs/examples/04_kafka_flinksql_producer.py
 ```
 
 ```
-flink run -py /opt/flink/usr_jobs/examples/05_kafka_flinksql_tumbling_window.py
+python /opt/flink/usr_jobs/examples/05_kafka_flinksql_tumbling_window.py
 ```
 
 ```
