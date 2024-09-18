@@ -6,6 +6,7 @@
 * https://www.linkedin.com/pulse/how-i-dockerized-apache-flink-kafka-postgresql-data-de-nevrezé-mh8wf
 * https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-mongodb/1.1.0-1.18/
 * https://medium.com/@dmitri.mahayana/idx-stock-real-time-data-prediction-with-flink-kafka-mongodb-526c6abf291f
+* https://github.com/diptimanr/kafka_flink_getting_started/tree/master
 
 ### Kafka
 
@@ -136,4 +137,30 @@ flink run -py /opt/flink/usr_jobs/tables/mongo_sink.py
 
 ```
 python /opt/flink/usr_jobs/tables/print_sink.py
+```
+
+
+## 3. Examples
+```
+python /opt/flink/usr_jobs/examples/01_batch_csv_process.py
+```
+
+```
+python /opt/flink/usr_jobs/examples/02_batch_csv_flinksql.py
+```
+
+```
+python /opt/flink/usr_jobs/examples/04_kafka_flinksql_producer.py
+```
+
+```
+flink run -py /opt/flink/usr_jobs/examples/05_kafka_flinksql_tumbling_window.py
+```
+
+```
+python /opt/flink/usr_jobs/examples/06_kafka_pyflink_tableapi_tumbling_window.py
+```
+
+```
+python /opt/flink/usr_jobs/examples/09_pyflink_udf_tableapi.py
 ```
